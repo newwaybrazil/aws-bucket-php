@@ -1,0 +1,43 @@
+{
+    "name": "newwaybrazil/aws-bucket-php",
+    "description": "PHP library to use aws s3 bucket return",
+    "version": "1.0.0",
+    "type": "library",
+    "license": "GPL-3.0-only",
+    "require": {
+        "php" : "^7.1",
+        "aws/aws-sdk-php": "^3.70"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7.5",
+        "mockery/mockery": "~1.2.0",
+        "squizlabs/php_codesniffer": "3.2"
+    },
+    "authors": [
+        {
+            "name": "New Way Brazil",
+            "email": "contato@gruponewway.com.br"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "AwsBucket\\": "src/"
+        }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "bash contrib/setup.sh"
+        ],
+        "check" : [
+            "@lint",
+            "@cs",
+            "@test"
+        ],
+        "lint" : [
+            "find ./src -name '*.php' -print0 | xargs -0 -n1 -P8 php -l -d display_errors=0"
+        ],
+        "cs" : "vendor/bin/phpcs",
+        "test" : "vendor/bin/phpunit",
+        "test-xml" : "vendor/bin/phpunit --coverage-html coverage --coverage-clover coverage/coverage.xml --log-junit coverage/junit.xml"
+    }
+}
