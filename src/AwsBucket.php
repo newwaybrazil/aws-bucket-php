@@ -18,7 +18,7 @@ class AwsBucket
     }
 
     /**
-     * PutFile into AwsBucket
+     * PutFile into AwsBucket based on a content
      * @param string $content content of file
      * @param string $name file name
      * @param string $extension file extension
@@ -35,6 +35,29 @@ class AwsBucket
             'Key' => $fileName .'.'. $extension,
             'Body' => $content,
             'ContentType' => 'text/csv',
+            'ACL' => 'public-read',
+        ])->toArray();
+        
+        return $result['ObjectURL'];
+    }
+
+    /**
+     * PutFile into AwsBucket based on uploaded file
+     * @param string $oringin origin file
+     * @param string $name file name
+     * @param string $extension file extension
+     * @return string
+     */
+    public function putFileOrigin($origin, $name, $extension)
+    {
+        $fileName = md5(rand(1, 999) . $name);
+
+        $s3Client = $this->newS3Client();
+
+        $result = $s3Client->putObject([
+            'Bucket' => $this->s3Config['bucket'],
+            'Key' => $fileName .'.'. $extension,
+            'SourceFile' => $origin,
             'ACL' => 'public-read',
         ])->toArray();
         
