@@ -56,6 +56,42 @@ class AwsBucketHelperTest extends TestCase
     }
 
     /**
+     * @covers AwsBucket\AwsBucket::putFileOrigin
+     */
+    public function testPutFileOrigin()
+    {
+        $result = [
+            'ObjectURL' => 'https://url/file.ext',
+        ];
+
+        $sqsClientMock = Mockery::mock(S3Client::class);
+        $sqsClientMock->shouldReceive('putObject')
+            ->once()
+            ->withAnyArgs()
+            ->andReturnSelf();
+
+        $sqsClientMock->shouldReceive('toArray')
+            ->once()
+            ->withAnyArgs()
+            ->andReturn($result)
+            ->getMock();
+
+        $awsBucketPartialMock = Mockery::mock(AwsBucket::class)
+            ->makePartial();
+
+        $awsBucketPartialMock->shouldReceive('newS3Client')
+            ->once()
+            ->andReturn($sqsClientMock);
+
+        $origin = 'sample.txt';
+        $name = 'sample';
+        $extension = 'txt';
+
+        $file = $awsBucketPartialMock->putFileOrigin($origin, $name, $extension);
+        $this->assertEquals($file, 'https://url/file.ext');
+    }
+
+    /**
      * @covers AwsBucket\AwsBucket::listFiles
      */
     public function testListFiles()
