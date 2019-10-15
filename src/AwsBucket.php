@@ -48,18 +48,24 @@ class AwsBucket
      * @param string $extension file extension
      * @return string
      */
-    public function putFileOrigin($origin, $name, $extension)
+    public function putFileOrigin($origin, $name, $extension, $contentType = null)
     {
         $fileName = md5(rand(1, 999) . $name);
 
         $s3Client = $this->newS3Client();
 
-        $result = $s3Client->putObject([
+        $s3Config = [
             'Bucket' => $this->s3Config['bucket'],
             'Key' => $fileName .'.'. $extension,
             'SourceFile' => $origin,
             'ACL' => 'public-read',
-        ])->toArray();
+        ];
+
+        if ($contentType) {
+            $s3Config['ContentType'] = $contentType;
+        }
+
+        $result = $s3Client->putObject($s3Config)->toArray();
         
         return $result['ObjectURL'];
     }
