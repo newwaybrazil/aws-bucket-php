@@ -48,9 +48,13 @@ class AwsBucket
      * @param string $extension file extension
      * @return string
      */
-    public function putFileOrigin($origin, $name, $extension, $contentType = null)
+    public function putFileOrigin($origin, $name, $extension, $contentType = null, $path = null)
     {
         $fileName = md5(rand(1, 999) . $name);
+
+        if (!empty($path)) {
+            $fileName = "$path/$fileName";
+        }
 
         $s3Client = $this->newS3Client();
 
